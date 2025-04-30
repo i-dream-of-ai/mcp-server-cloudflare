@@ -2,16 +2,14 @@ import { z } from 'zod'
 
 import type {
 	IndexCreateParams,
-	IndexDeleteByIDsParams,
 	IndexDimensionConfigurationParam,
-	IndexGetByIDsParams,
 	IndexInsertParams,
 	IndexQueryParams,
 	IndexUpsertParams,
 } from 'cloudflare/resources/vectorize/indexes/indexes'
 
 /** Zod schema for a Vectorize Index name. */
-export const VectorizeIndexNameSchema = z
+export const VectorizeIndexNameSchema: z.ZodType<IndexCreateParams['name']> = z
 	.string()
 	.min(1, 'Index name cannot be empty.')
 	.max(64, 'Index name cannot exceed 64 characters.')
@@ -19,7 +17,7 @@ export const VectorizeIndexNameSchema = z
 		/^[a-zA-Z0-9_-]+$/,
 		'Index name can only contain alphanumeric characters, underscores, and hyphens.'
 	)
-	.describe('The unique name of the Vectorize Index.')
+	.describe('The name of the Vectorize Index.')
 
 /** Zod schema for a Vectorize Index description. */
 export const VectorizeIndexDescriptionSchema: z.ZodType<IndexCreateParams['description']> = z
@@ -34,6 +32,8 @@ export const VectorizeIndexDimensionSchema: z.ZodType<
 > = z
 	.number()
 	.int()
+	.min(32, 'Dimensions must be at least 32.')
+	.max(1536, 'Dimensions must be at most 1536.')
 	.positive('Dimensions must be a positive integer.')
 	.describe('The number of dimensions for the vectors in the index.')
 
@@ -76,10 +76,12 @@ export const VectorizeIndexConfigSchema: z.ZodType<IndexCreateParams['config']> 
 		'The configuration for the Vectorize Index, specifying either dimensions/metric or a preset model.'
 	)
 
-/** Zod schema for a list of vector IDs. */
+/** Zod schema for a list of vector IDs. Parameter itself is optional in tools. */
 export const VectorizeVectorIdListSchema = z
 	.array(z.string().min(1))
 	.min(1, 'At least one vector ID must be provided.')
+	.optional()
+	.nullable()
 	.describe('A list of vector identifiers.')
 
 /** Zod schema for the NDJSON body used in insert/upsert operations. */
@@ -108,7 +110,7 @@ export const VectorizeQueryVectorSchema: z.ZodType<IndexQueryParams['vector']> =
 
 /** Zod schema for the query metadata filter. */
 export const VectorizeQueryFilterSchema: z.ZodType<IndexQueryParams['filter']> = z
-	.record(z.unknown()) // Using z.record(z.unknown()) to represent a generic JSON object
+	.record(z.unknown())
 	.optional()
 	.describe('A metadata filter expression (JSON object) used to limit search results.')
 
@@ -133,39 +135,34 @@ export const VectorizeQueryTopKSchema: z.ZodType<IndexQueryParams['topK']> = z
 	.describe('The number of nearest neighbors to retrieve.')
 
 /** Zod schema for the page number for pagination. */
-export const VectorizeListPageParam = z // Corresponds roughly to PaginationPageParam in shared
+export const VectorizeListPageParam = z
 	.number()
 	.int()
 	.positive()
 	.optional()
+	.nullable()
 	.describe('Page number for pagination.')
 
 /** Zod schema for the number of items per page for pagination. */
-export const VectorizeListPerPageParam = z // Corresponds roughly to PaginationPerPageParam in shared
+export const VectorizeListPerPageParam = z
 	.number()
 	.int()
 	.positive()
-	.max(100) // Assuming a max page size, adjust if needed
+	.max(100)
 	.optional()
+	.nullable()
 	.describe('Number of indexes to return per page (max 100).')
 
 /** Zod schema for the order field for pagination. */
-export const VectorizeListOrderParam = z // Corresponds roughly to PaginationOrderParam in shared
-	.string() // Usually specific fields like 'name', 'created_on' - let LLM decide or refine later
+export const VectorizeListOrderParam = z
+	.string()
 	.optional()
+	.nullable()
 	.describe('Field to order results by (e.g., "name", "created_on").')
 
 /** Zod schema for the direction for pagination. */
-export const VectorizeListDirectionParam = z // Corresponds roughly to PaginationDirectionParam in shared
+export const VectorizeListDirectionParam = z
 	.enum(['asc', 'desc'])
 	.optional()
+	.nullable()
 	.describe('Direction to order results (ascending or descending).')
-
-// Combine into a single schema for the list tool parameters (optional)
-// Although the tool registration takes individual params, this can be useful internally
-export const VectorizeIndexListParamsSchema = z.object({
-	page: VectorizeListPageParam,
-	per_page: VectorizeListPerPageParam,
-	order: VectorizeListOrderParam,
-	direction: VectorizeListDirectionParam,
-}) // Note: SDK IndexListParams only has account_id, these go in options.query
