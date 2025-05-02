@@ -779,7 +779,7 @@ importers:
         specifier: 0.0.5
         version: 0.0.5
       '@fast-csv/format':
-        specifier: ^5.0.2
+        specifier: 5.0.2
         version: 5.0.2
       '@hono/zod-validator':
         specifier: 0.4.3
