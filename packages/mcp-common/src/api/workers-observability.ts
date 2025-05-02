@@ -8,6 +8,7 @@ import { V4Schema } from '../v4-api'
 
 import type { z } from 'zod'
 import type { zKeysRequest, zQueryRunRequest, zValuesRequest } from '../types/workers-logs-schemas'
+import { env } from 'cloudflare:workers'
 
 type QueryRunRequest = z.infer<typeof zQueryRunRequest>
 
@@ -23,6 +24,8 @@ export async function queryWorkersObservability(
 	accountId: string,
 	query: QueryRunRequest
 ): Promise<z.infer<typeof zReturnedQueryRunResult> | null> {
+	// @ts-expect-error We don't have actual env in this package
+	const environment = env.ENVIRONMENT
 	const data = await fetchCloudflareApi({
 		endpoint: '/workers/observability/telemetry/query',
 		accountId,
@@ -32,6 +35,7 @@ export async function queryWorkersObservability(
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				'workers-observability-origin': `workers-observability-mcp-${environment}`,
 			},
 			body: JSON.stringify({ ...query, timeframe: fixTimeframe(query.timeframe) }),
 		},
