@@ -128,7 +128,7 @@ This tool provides three primary views of your Worker data:
 					}
 				}
 
-				if(query.view === 'events') {
+				if (query.view === 'events') {
 					const events = response?.events?.events
 					return {
 						content: [
@@ -140,16 +140,13 @@ This tool provides three primary views of your Worker data:
 					}
 				}
 
-				if(query.view === 'invocations') {
+				if (query.view === 'invocations') {
 					const invocations = Object.entries(response?.invocations || {}).map(([_, logs]) => {
 						const invocationLog = logs.find((log) => log.$metadata.type === 'cf-worker-event')
 						return invocationLog?.$metadata ?? logs[0]?.$metadata
-					});
+					})
 
-					const tsv = await writeToString(
-						invocations,
-						{ headers: true, delimiter: '\t' }
-					)
+					const tsv = await writeToString(invocations, { headers: true, delimiter: '\t' })
 					return {
 						content: [
 							{
