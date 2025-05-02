@@ -64,7 +64,7 @@ This tool provides three primary views of your Worker data:
 				const response = await queryWorkersObservability(agent.props.accessToken, accountId, query)
 
 				if (query.view === 'calculations') {
-					let data = 'DISPLAY THE CALCULATIONS IN A GRAPHICAL WAY'
+					let data = ''
 					for (const calculation of response?.calculations || []) {
 						const alias = calculation.alias || calculation.calculation
 						const aggregates = calculation.aggregates.map((agg) => {
