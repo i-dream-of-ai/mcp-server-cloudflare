@@ -1,3 +1,5 @@
+import { env } from 'cloudflare:workers'
+
 import { fetchCloudflareApi } from '../cloudflare-api'
 import {
 	zKeysResponse,
@@ -8,7 +10,6 @@ import { V4Schema } from '../v4-api'
 
 import type { z } from 'zod'
 import type { zKeysRequest, zQueryRunRequest, zValuesRequest } from '../types/workers-logs-schemas'
-import { env } from 'cloudflare:workers'
 
 type QueryRunRequest = z.infer<typeof zQueryRunRequest>
 
