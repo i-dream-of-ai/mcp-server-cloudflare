@@ -23,7 +23,6 @@ export function parseRelativeTime(input: string): number {
 		return total + value * units[unit]
 	}, 0)
 
-	console.log(`Parsed relative time: ${input} -> ${sign * seconds} seconds`)
 	return sign * seconds
 }
 
