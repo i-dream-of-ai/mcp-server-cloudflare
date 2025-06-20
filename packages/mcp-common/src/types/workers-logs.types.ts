@@ -186,6 +186,7 @@ export const zTimeframeRelative = z
   • Reference time format: "YYYY-MM-DDTHH:MM:SSZ" (ISO-8601) (e.g., "2025-04-29T14:30:00Z")
   • Offset format: Must start with a '+' or '-' sign, which indicates whether the offset is in the past or future, followed by one or more time units (e.g., '+5d', '-2h', '+6h20m').
 		Units: s (seconds), m (minutes), h (hours), d (days), w (weeks).
+	• You should not use a future looking offset in combination with the current server time as the reference time, as this will yield no results. (e.g. "the next 20 minutes")
 
   Examples:
   - Last 30 minutes: reference="${nowISO()}", offset="-30m"
