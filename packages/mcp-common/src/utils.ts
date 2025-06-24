@@ -19,7 +19,7 @@ export function parseRelativeTime(input: string): number {
 	const matches = timeStr.match(/\d+[smhdw]/g)
 
 	if (!matches) {
-		throw new Error(`This shouldn't ever happen, but no matches found in: ${timeStr}`)
+		throw new Error(`No matches found while parsing relative time: ${timeStr}`)
 	}
 
 	const seconds = matches.reduce((total, match) => {
