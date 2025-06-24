@@ -16,7 +16,13 @@ export function parseRelativeTime(input: string): number {
 	const sign = cleanedInput.startsWith('-') ? -1 : 1
 
 	const timeStr = cleanedInput.slice(1) // Remove the sign
-	const seconds = timeStr.match(/\d+[smhdw]/g)!.reduce((total, match) => {
+	const matches = timeStr.match(/\d+[smhdw]/g)
+
+	if (!matches) {
+		throw new Error(`This shouldn't ever happen, but no matches found in: ${timeStr}`)
+	}
+
+	const seconds = matches.reduce((total, match) => {
 		const value = parseInt(match)
 		const unit = match.slice(-1) as keyof typeof units
 
