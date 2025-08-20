@@ -1,0 +1,11 @@
+name = "mcp-cloudflare"
+main = "index.js"
+compatibility_date = "2024-12-01"
+
+[env.production]
+name = "mcp-cloudflare-prod"
+
+[vars]
+# Add your Cloudflare API credentials here or use secrets
+# CLOUDFLARE_API_TOKEN = ""
+# CLOUDFLARE_ACCOUNT_ID = ""
